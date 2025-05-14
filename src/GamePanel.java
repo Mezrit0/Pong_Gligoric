@@ -14,19 +14,16 @@ public class GamePanel extends JPanel implements Runnable {
     /**
      * player stats
      */
-    int playerX = 700;
-    int playerY = 300;
-    int playerSpeed = 5;
-    Rectangle playerPaddle = new Rectangle(playerX, playerY, 25, 150);
+    Player player = new Player(760, 300, 5);
 
     /**
      * ball stats
      */
-    int ballX = 300;
-    int ballY = 200;
-    int ballSize = 20;
-    int ballSpeedX = 4;
-    int ballSpeedY = 4;
+
+    Ball ball = new Ball(300, 200, 20, 4, 4, width, height);
+
+    Score score = new Score();
+
 
 
     GamePanel(){
@@ -67,12 +64,20 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update(){
         if (keyListener.downPressed){
-            playerY += playerSpeed;
+            player.playerY += player.playerSpeed;
         }
         else if (keyListener.upPressed){
-            playerY -= playerSpeed;
+            player.playerY -= player.playerSpeed;
         }
-        playerPaddle.y = playerY;
+        player.playerPaddle.y = player.playerY;
+
+        ball.update();
+
+        if (ball.ballSize + ball.ballSize >= width) {
+            ball.ballSpeedX = -ball.ballSpeedY;
+            score.increase();
+        }
+        ball.checkCollisionWithPaddle(player.playerPaddle);
     }
 
     @Override
@@ -81,11 +86,9 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2 = (Graphics2D)g;
 
-        g2.setColor(Color.white);
-        g2.fill(playerPaddle);
-
-        g2.setColor(Color.yellow);
-        g2.fillOval(ballX, ballY, ballSize, ballSize);
+        player.draw(g2);
+        ball.draw(g2);
+        score.draw(g2, width);
         
         g2.dispose();
     }
