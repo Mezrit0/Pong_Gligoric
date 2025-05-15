@@ -45,6 +45,10 @@ public class Ball {
             ballSpeedX = -ballSpeedX;
         }
 
+        if (checkCollisionWithPaddle(ne)){
+            resetBall();
+        }
+
 
     }
 
@@ -58,6 +62,7 @@ public class Ball {
         ballSpeedX = 4;
         ballSpeedY = 4;
     }
+
 
 
     public void draw(Graphics2D g2) {
