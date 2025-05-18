@@ -45,9 +45,7 @@ public class Ball {
             ballSpeedX = -ballSpeedX;
         }
 
-        if (checkCollisionWithPaddle(ne)){
-            resetBall();
-        }
+
 
 
     }
@@ -61,6 +59,11 @@ public class Ball {
         ballY = panelHeight / 2;
         ballSpeedX = 4;
         ballSpeedY = 4;
+    }
+
+    public void speedIncrease() {
+        ballSpeedY += 1;
+        ballSpeedX += 1;
     }
 
 
@@ -80,5 +83,45 @@ public class Ball {
         if (ballRect.intersects(paddle)) {
             ballSpeedX = -ballSpeedX;
         }
+    }
+
+    public int getBallX() {
+        return ballX;
+    }
+
+    public void setBallX(int ballX) {
+        this.ballX = ballX;
+    }
+
+    public int getBallY() {
+        return ballY;
+    }
+
+    public void setBallY(int ballY) {
+        this.ballY = ballY;
+    }
+
+    public int getBallSize() {
+        return ballSize;
+    }
+
+    public void setBallSize(int ballSize) {
+        this.ballSize = ballSize;
+    }
+
+    public int getBallSpeedX() {
+        return ballSpeedX;
+    }
+
+    public void setBallSpeedX(int ballSpeedX) {
+        this.ballSpeedX = ballSpeedX;
+    }
+
+    public int getBallSpeedY() {
+        return ballSpeedY;
+    }
+
+    public void setBallSpeedY(int ballSpeedY) {
+        this.ballSpeedY = ballSpeedY;
     }
 }

@@ -27,6 +27,6 @@ public class Score {
         int stringWidth = g2.getFontMetrics().stringWidth(text);
         int x = (panelWidth - stringWidth) / 2;
 
-        g2.drawString(text, x, 50); // Y=50 je výška od horního okraje
+        g2.drawString(text, x, 50);
     }
 }

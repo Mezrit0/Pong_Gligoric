@@ -10,7 +10,8 @@ public class GamePanel extends JPanel implements Runnable {
     final int height = 600;
     Thread gameThread;
     KeyListener keyListener = new KeyListener();
-
+    private Menu menu;
+    private String gameState = "MENU";
     /**
      * player stats
      */
@@ -20,13 +21,27 @@ public class GamePanel extends JPanel implements Runnable {
      * ball stats
      */
 
-    Ball ball = new Ball(300, 200, 20, 4, 4, width, height);
+    Ball ball = new Ball(300, 200, 20, 2, 2, width, height);
 
     Score score = new Score();
 
 
 
     GamePanel(){
+
+        /**
+         * Switching screens between game and menu
+         * Source: ChatGPT
+         */
+        menu = new Menu(() -> {
+            gameState = "GAME";
+            menu.setVisible(false);
+            this.requestFocusInWindow();
+        });
+        menu.setBounds(0, 0, width, height);
+        this.setLayout(null);
+        this.add(menu);
+
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
@@ -73,9 +88,16 @@ public class GamePanel extends JPanel implements Runnable {
 
         ball.update();
 
-        if (ball.ballSize + ball.ballSize >= width) {
-            ball.ballSpeedX = -ball.ballSpeedY;
+        if (ball.getBallX() <= 0) {
             score.increase();
+            ball.speedIncrease();
+        }
+        if (ball.getBallX() > width) {
+            ball.resetBall();
+            score.reset();
+            gameState = "MENU";
+            menu.setVisible(true);
+            this.requestFocusInWindow();
         }
         ball.checkCollisionWithPaddle(player.playerPaddle);
     }
@@ -86,11 +108,31 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2 = (Graphics2D)g;
 
-        player.draw(g2);
-        ball.draw(g2);
-        score.draw(g2, width);
+        if (gameState.equals("MENU")) {
+
+            /**
+             * first attempt to make menu without buttons
+             */
+//            g2.setColor(Color.WHITE);
+//            g2.setFont(new Font("Arial", Font.BOLD, 48));
+//            g2.drawString("PONG", getWidth() / 2 - 80, 150);
+//
+//            g2.setFont(new Font("Arial", Font.PLAIN, 32));
+//            g2.drawString("Press ENTER to Start", getWidth() / 2 - 160, 250);
+        } else if (gameState.equals("GAME")) {
+            player.draw(g2);
+            ball.draw(g2);
+            score.draw(g2, width);
+        }
         
         g2.dispose();
     }
 
+    public String getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(String gameState) {
+        this.gameState = gameState;
+    }
 }
