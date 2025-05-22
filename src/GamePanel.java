@@ -9,9 +9,10 @@ public class GamePanel extends JPanel implements Runnable {
     final int width = 800;
     final int height = 600;
     Thread gameThread;
-    KeyListener keyListener = new KeyListener();
+    KeyListener keyListener = new KeyListener(this);
     private Menu menu;
     private String gameState = "MENU";
+    PauseMenu pauseMenu;
     /**
      * player stats
      */
@@ -41,13 +42,15 @@ public class GamePanel extends JPanel implements Runnable {
         menu.setBounds(0, 0, width, height);
         this.setLayout(null);
         this.add(menu);
-
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyListener);
         this.setFocusable(true);
         this.requestFocusInWindow();
+        pauseMenu = new PauseMenu(this);
+        pauseMenu.setVisible(false);
+        this.add(pauseMenu);
     }
 
     public void startGameThreads(){
@@ -78,6 +81,12 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update(){
+        /**
+         * if game is stopped it won't update
+         */
+        if(!gameState.equals("GAME")){
+            return;
+        }
         if (keyListener.downPressed){
             player.playerY += player.playerSpeed;
         }
@@ -99,6 +108,7 @@ public class GamePanel extends JPanel implements Runnable {
             menu.setVisible(true);
             this.requestFocusInWindow();
         }
+
         ball.checkCollisionWithPaddle(player.playerPaddle);
     }
 
@@ -124,6 +134,7 @@ public class GamePanel extends JPanel implements Runnable {
             ball.draw(g2);
             score.draw(g2, width);
         }
+
         
         g2.dispose();
     }
@@ -132,7 +143,17 @@ public class GamePanel extends JPanel implements Runnable {
         return gameState;
     }
 
-    public void setGameState(String gameState) {
-        this.gameState = gameState;
+    public void setGameState(String newState) {
+        this.gameState = newState;
+
+        if (newState.equals("PAUSE")) {
+            pauseMenu.setVisible(true);
+        } else {
+            pauseMenu.setVisible(false);
+        }
+    }
+
+    public Menu getMenu() {
+        return menu;
     }
 }

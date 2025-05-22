@@ -7,6 +7,9 @@ public class KeyListener implements java.awt.event.KeyListener {
     public boolean downPressed;
     private GamePanel gamePanel;
 
+    public KeyListener(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -28,13 +31,15 @@ public class KeyListener implements java.awt.event.KeyListener {
          *  if mid game player needs to pause the game this changes the game state
          */
 
-        if (code == KeyEvent.VK_ESCAPE && gamePanel.getGameState().equals("GAME")) {
-            gamePanel.setGameState("PAUSE");
-        } else if (gamePanel.getGameState().equals("PAUSE")) {
-            if () {
+        if (code == KeyEvent.VK_ESCAPE) {
+            if (gamePanel.getGameState().equals("GAME")) {
+                gamePanel.setGameState("PAUSE");
+                gamePanel.pauseMenu.setVisible(true);
+            } else if (gamePanel.getGameState().equals("PAUSE")) {
                 gamePanel.setGameState("GAME");
+                gamePanel.pauseMenu.setVisible(false);
+                gamePanel.requestFocusInWindow();
             }
-
         }
 
     }
