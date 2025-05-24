@@ -24,6 +24,12 @@ public class GamePanel extends JPanel implements Runnable {
 
     Ball ball = new Ball(300, 200, 20, 2, 2, width, height);
 
+    /**
+     * AI stats
+     */
+    AIMode ai;
+    private boolean aiMode = false;
+
     Score score = new Score();
 
 
@@ -50,6 +56,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.requestFocusInWindow();
         pauseMenu = new PauseMenu(this);
         pauseMenu.setVisible(false);
+        ai = new AIMode(20, 300);
         this.add(pauseMenu);
     }
 
@@ -87,6 +94,10 @@ public class GamePanel extends JPanel implements Runnable {
         if(!gameState.equals("GAME")){
             return;
         }
+        if (aiMode) {
+            ai.update(ball.getBallY());
+            ball.checkCollisionWithPaddle(ai.getPaddle());
+        }
         if (keyListener.downPressed){
             player.playerY += player.playerSpeed;
         }
@@ -96,6 +107,7 @@ public class GamePanel extends JPanel implements Runnable {
         player.playerPaddle.y = player.playerY;
 
         ball.update();
+        ai.update(ball.getBallY());
 
         if (ball.getBallX() <= 0) {
             score.increase();
@@ -110,6 +122,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         ball.checkCollisionWithPaddle(player.playerPaddle);
+        ball.checkCollisionWithPaddle(ai.getPaddle());
     }
 
     @Override
@@ -135,7 +148,7 @@ public class GamePanel extends JPanel implements Runnable {
             score.draw(g2, width);
         }
 
-        
+        ai.draw(g2);
         g2.dispose();
     }
 

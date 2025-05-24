@@ -6,12 +6,12 @@ import java.awt.event.ActionListener;
 public class PauseMenu extends JPanel {
 
     public PauseMenu(GamePanel gamePanel) {
-        setBounds(200, 150, 400, 300);
+        setBounds(0, 0, 800, 600);
         setLayout(null);
         JButton resumeButton = new JButton("Resume");
-        resumeButton.setBounds(125, 80, 150, 40);
+        resumeButton.setBounds((800 - 150)/2, 200, 150, 40);
         JButton quitButton = new JButton("Quit");
-        quitButton.setBounds(125, 140, 150, 40);
+        quitButton.setBounds((800 - 150)/2, 160, 150, 40);
         add(resumeButton);
         add(quitButton);
 
@@ -32,10 +32,5 @@ public class PauseMenu extends JPanel {
                 gamePanel.requestFocusInWindow();
             }
         });
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
     }
 }
