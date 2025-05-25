@@ -13,6 +13,8 @@ public class GamePanel extends JPanel implements Runnable {
     private Menu menu;
     private String gameState = "MENU";
     PauseMenu pauseMenu;
+    private ChooseModeMenu chooseModeMenu;
+    HighScoreTab highScoreTab = new HighScoreTab();
     /**
      * player stats
      */
@@ -41,13 +43,21 @@ public class GamePanel extends JPanel implements Runnable {
          * Source: ChatGPT
          */
         menu = new Menu(() -> {
-            gameState = "GAME";
             menu.setVisible(false);
+            chooseModeMenu.setVisible(true);
+        });
+
+        chooseModeMenu = new ChooseModeMenu(this, () -> {
+            gameState = "GAME";
+            chooseModeMenu.setVisible(false);
             this.requestFocusInWindow();
         });
+        chooseModeMenu.setVisible(false);
+
+        this.add(menu);
+        this.add(chooseModeMenu);
         menu.setBounds(0, 0, width, height);
         this.setLayout(null);
-        this.add(menu);
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
@@ -107,13 +117,16 @@ public class GamePanel extends JPanel implements Runnable {
         player.playerPaddle.y = player.playerY;
 
         ball.update();
-        ai.update(ball.getBallY());
 
         if (ball.getBallX() <= 0) {
             score.increase();
             ball.speedIncrease();
+            if (!aiMode) {
+                ball.speedIncrease();
+            }
         }
         if (ball.getBallX() > width) {
+            highScoreTab.addScore(score.getPlayerScore());
             ball.resetBall();
             score.reset();
             gameState = "MENU";
@@ -121,8 +134,12 @@ public class GamePanel extends JPanel implements Runnable {
             this.requestFocusInWindow();
         }
 
-        ball.checkCollisionWithPaddle(player.playerPaddle);
-        ball.checkCollisionWithPaddle(ai.getPaddle());
+        if (aiMode) {
+            ball.checkCollisionWithPaddle(ai.getPaddle());
+            ball.checkCollisionWithPaddle(player.playerPaddle);
+        } else {
+            ball.checkCollisionWithPaddle(player.playerPaddle);
+        }
     }
 
     @Override
@@ -147,8 +164,9 @@ public class GamePanel extends JPanel implements Runnable {
             ball.draw(g2);
             score.draw(g2, width);
         }
-
-        ai.draw(g2);
+        if (aiMode) {
+            ai.draw(g2);
+        }
         g2.dispose();
     }
 
@@ -168,5 +186,13 @@ public class GamePanel extends JPanel implements Runnable {
 
     public Menu getMenu() {
         return menu;
+    }
+
+    public void setAiMode(boolean enabled) {
+        this.aiMode = enabled;
+    }
+
+    public boolean isAiMode() {
+        return aiMode;
     }
 }
