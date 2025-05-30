@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,5 +50,22 @@ public class HighScoreTab {
 
     public List<Integer> getTopScores() {
         return scores;
+    }
+
+    public void drawHighScores(Graphics2D g2) {
+        g2.setColor(Color.WHITE);
+        g2.setFont(new Font("Arial", Font.BOLD, 36));
+        g2.drawString("High Scores", 330, 80);
+
+        g2.setFont(new Font("Arial", Font.PLAIN, 24));
+        List<Integer> topScores = getTopScores();
+
+        for (int i = 0; i < topScores.size(); i++) {
+            String scoreLine = (i + 1) + ". " + topScores.get(i);
+            g2.drawString(scoreLine, 330, 140 + i * 30);
+        }
+
+        g2.setFont(new Font("Arial", Font.PLAIN, 20));
+        g2.drawString("Press ESC to return", 330, 500);
     }
 }

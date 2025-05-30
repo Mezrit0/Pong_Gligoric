@@ -39,6 +39,9 @@ public class KeyListener implements java.awt.event.KeyListener {
                 gamePanel.setGameState("GAME");
                 gamePanel.pauseMenu.setVisible(false);
                 gamePanel.requestFocusInWindow();
+            }else if (gamePanel.getGameState().equals("HIGHSCORE")) {
+                gamePanel.setGameState("MENU");
+                gamePanel.getMenu().setVisible(true);
             }
         }
 

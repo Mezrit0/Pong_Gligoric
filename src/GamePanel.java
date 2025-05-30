@@ -14,7 +14,8 @@ public class GamePanel extends JPanel implements Runnable {
     private String gameState = "MENU";
     PauseMenu pauseMenu;
     private ChooseModeMenu chooseModeMenu;
-    HighScoreTab highScoreTab = new HighScoreTab();
+    private HighScoreTab highScoreTab = new HighScoreTab();
+    PVPMode pvpMode = new PVPMode();
     /**
      * player stats
      */
@@ -45,7 +46,7 @@ public class GamePanel extends JPanel implements Runnable {
         menu = new Menu(() -> {
             menu.setVisible(false);
             chooseModeMenu.setVisible(true);
-        });
+        }, this);
 
         chooseModeMenu = new ChooseModeMenu(this, () -> {
             gameState = "GAME";
@@ -103,6 +104,10 @@ public class GamePanel extends JPanel implements Runnable {
          */
         if(!gameState.equals("GAME")){
             return;
+        }
+        if (!aiMode) {
+            pvpMode.update(keyListener.upPressed, keyListener.downPressed);
+            ball.checkCollisionWithPaddle(pvpMode.getPaddle());
         }
         if (aiMode) {
             ai.update(ball.getBallY());
@@ -163,6 +168,15 @@ public class GamePanel extends JPanel implements Runnable {
             player.draw(g2);
             ball.draw(g2);
             score.draw(g2, width);
+        }else if (gameState.equals("HIGHSCORE")) {
+            menu.setVisible(false);
+            chooseModeMenu.setVisible(false);
+            pauseMenu.setVisible(false);
+            highScoreTab.drawHighScores(g2);
+        }
+
+        if (!aiMode && gameState.equals("GAME")) {
+            pvpMode.draw(g2);
         }
         if (aiMode) {
             ai.draw(g2);
@@ -177,10 +191,22 @@ public class GamePanel extends JPanel implements Runnable {
     public void setGameState(String newState) {
         this.gameState = newState;
 
-        if (newState.equals("PAUSE")) {
-            pauseMenu.setVisible(true);
-        } else {
-            pauseMenu.setVisible(false);
+        menu.setVisible(false);
+        chooseModeMenu.setVisible(false);
+        pauseMenu.setVisible(false);
+
+        switch (newState) {
+            case "MENU":
+                menu.setVisible(true);
+                break;
+            case "CHOOSE_MODE":
+                chooseModeMenu.setVisible(true);
+                break;
+            case "PAUSE":
+                pauseMenu.setVisible(true);
+                break;
+            case "HIGHSCORE":
+                break;
         }
     }
 
