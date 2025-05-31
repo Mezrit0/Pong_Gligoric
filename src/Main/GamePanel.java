@@ -1,3 +1,5 @@
+package Main;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,6 +18,7 @@ public class GamePanel extends JPanel implements Runnable {
     private ChooseModeMenu chooseModeMenu;
     private HighScoreTab highScoreTab = new HighScoreTab();
     PVPMode pvpMode = new PVPMode();
+    private boolean pvpmode = false;
     /**
      * player stats
      */
@@ -76,6 +79,10 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start();
     }
 
+    /**
+     * the cycle of running the game till its closed and implementation of fps
+     */
+
     @Override
     public void run() {
         int fps = 60;
@@ -98,38 +105,86 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    public void update(){
-        /**
-         * if game is stopped it won't update
-         */
-        if(!gameState.equals("GAME")){
+    public void update() {
+        if (!gameState.equals("GAME")) {
             return;
         }
-        if (!aiMode) {
-            pvpMode.update(keyListener.upPressed, keyListener.downPressed);
-            ball.checkCollisionWithPaddle(pvpMode.getPaddle());
-        }
-        if (aiMode) {
-            ai.update(ball.getBallY());
-            ball.checkCollisionWithPaddle(ai.getPaddle());
-        }
-        if (keyListener.downPressed){
-            player.playerY += player.playerSpeed;
-        }
-        else if (keyListener.upPressed){
-            player.playerY -= player.playerSpeed;
-        }
-        player.playerPaddle.y = player.playerY;
 
         ball.update();
 
-        if (ball.getBallX() <= 0) {
-            score.increase();
-            ball.speedIncrease();
-            if (!aiMode) {
+        /**
+         * if player plays AI mod it will check collisions of both the paddles
+         */
+
+        if (aiMode) {
+            ai.update(ball.getBallY());
+
+            if (ball.checkCollisionWithPaddle(ai.getPaddle())) {
                 ball.speedIncrease();
             }
+
+            if (keyListener.sPressed) {
+                player.playerY += player.playerSpeed;
+            } else if (keyListener.wPressed) {
+                player.playerY -= player.playerSpeed;
+            }
+            player.playerPaddle.y = player.playerY;
+
+            /**
+             * if player plays pvp mode it will check collisions of both the paddles
+             */
+        } else if (pvpMode != null) {
+            if (keyListener.sPressed) {
+                player.playerY += player.playerSpeed;
+            } else if (keyListener.wPressed) {
+                player.playerY -= player.playerSpeed;
+            }
+            player.playerPaddle.y = player.playerY;
+
+            pvpMode.update(keyListener);
+            if (ball.checkCollisionWithPaddle(player.playerPaddle)) {
+                ball.speedIncrease();
+            }
+            if (ball.checkCollisionWithPaddle(pvpMode.getPaddle())) {
+                ball.speedIncrease();
+            }
+//            ball.checkCollisionWithPaddle(player.playerPaddle);
+//            ball.checkCollisionWithPaddle(pvpMode.getPaddle());
+
+            /**
+             * if player plays singleplayer the left wall wont be able to penetrate with ball
+             */
+        } else {
+            if (keyListener.sPressed) {
+                player.playerY += player.playerSpeed;
+            } else if (keyListener.wPressed) {
+                player.playerY -= player.playerSpeed;
+            }
+            player.playerPaddle.y = player.playerY;
+            ball.checkCollisionWithPaddle(player.playerPaddle);
         }
+
+        if (ball.getBallX() <= 0) {
+            if (aiMode) {
+                highScoreTab.addScore(score.getPlayerScore());
+                ball.resetBall();
+                score.reset();
+                gameState = "MENU";
+                menu.setVisible(true);
+                this.requestFocusInWindow();
+            } else if (pvpMode != null) {
+                ball.resetBall();
+                score.reset();
+                gameState = "MENU";
+                menu.setVisible(true);
+                this.requestFocusInWindow();
+            } else {
+                score.increase();
+                ball.speedIncrease();
+                ball.ballSpeedX = Math.abs(ball.ballSpeedX);
+            }
+        }
+
         if (ball.getBallX() > width) {
             highScoreTab.addScore(score.getPlayerScore());
             ball.resetBall();
@@ -137,13 +192,6 @@ public class GamePanel extends JPanel implements Runnable {
             gameState = "MENU";
             menu.setVisible(true);
             this.requestFocusInWindow();
-        }
-
-        if (aiMode) {
-            ball.checkCollisionWithPaddle(ai.getPaddle());
-            ball.checkCollisionWithPaddle(player.playerPaddle);
-        } else {
-            ball.checkCollisionWithPaddle(player.playerPaddle);
         }
     }
 
@@ -168,6 +216,13 @@ public class GamePanel extends JPanel implements Runnable {
             player.draw(g2);
             ball.draw(g2);
             score.draw(g2, width);
+
+            if (pvpMode != null && !aiMode) {
+                pvpMode.draw(g2);
+            }
+            if (aiMode) {
+                ai.draw(g2);
+            }
         }else if (gameState.equals("HIGHSCORE")) {
             menu.setVisible(false);
             chooseModeMenu.setVisible(false);
@@ -175,18 +230,17 @@ public class GamePanel extends JPanel implements Runnable {
             highScoreTab.drawHighScores(g2);
         }
 
-        if (!aiMode && gameState.equals("GAME")) {
-            pvpMode.draw(g2);
-        }
-        if (aiMode) {
-            ai.draw(g2);
-        }
         g2.dispose();
     }
 
     public String getGameState() {
         return gameState;
     }
+
+    /**
+     * sets the actual game state so it shows the right window
+     * @param newState
+     */
 
     public void setGameState(String newState) {
         this.gameState = newState;
@@ -220,5 +274,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public boolean isAiMode() {
         return aiMode;
+    }
+
+    public void setPvpMode(PVPMode mode) {
+        this.pvpMode = mode;
     }
 }

@@ -1,10 +1,12 @@
-import java.awt.event.KeyEvent;
+package Main;
 
-import static java.awt.SystemColor.menu;
+import java.awt.event.KeyEvent;
 
 public class KeyListener implements java.awt.event.KeyListener {
     public boolean upPressed;
     public boolean downPressed;
+    public boolean wPressed;
+    public boolean sPressed;
     private GamePanel gamePanel;
 
     public KeyListener(GamePanel gamePanel) {
@@ -19,12 +21,18 @@ public class KeyListener implements java.awt.event.KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
-
-        if (code == KeyEvent.VK_W) {
-            upPressed = true;
-        }
-        if (code == KeyEvent.VK_S) {
-            downPressed = true;
+        switch (code) {
+            case KeyEvent.VK_UP:
+                upPressed = true;
+                break;
+            case KeyEvent.VK_DOWN:
+                downPressed = true;
+                break;
+            case KeyEvent.VK_W:
+                wPressed = true;
+                break;
+            case KeyEvent.VK_S:
+                sPressed = true;
         }
 
         /**
@@ -50,11 +58,35 @@ public class KeyListener implements java.awt.event.KeyListener {
     public void keyReleased (KeyEvent e){
         int code = e.getKeyCode();
 
-        if (code == KeyEvent.VK_W) {
-            upPressed = false;
-        }
-        if (code == KeyEvent.VK_S) {
-            downPressed = false;
-        }
+        switch (code) {
+            case KeyEvent.VK_UP:
+                upPressed = false;
+                break;
+            case KeyEvent.VK_DOWN:
+                downPressed = false;
+                break;
+            case KeyEvent.VK_W:
+                wPressed = false;
+                break;
+            case KeyEvent.VK_S:
+                sPressed = false;
+                break;
+        }    }
+
+    public boolean isUpPressed() {
+        return upPressed;
+    }
+
+    public boolean isDownPressed() {
+        return downPressed;
+    }
+
+    public boolean iswPressed() {
+        return wPressed;
+    }
+
+    public boolean issPressed() {
+        return sPressed;
     }
 }
+

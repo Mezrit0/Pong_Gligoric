@@ -1,3 +1,5 @@
+package Main;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,6 +19,10 @@ public class PauseMenu extends JPanel {
 
         setBackground(new Color(0, 0, 0, 180));
         resumeButton.addActionListener(new ActionListener() {
+            /**
+             * if any of the buttons is pressed than the game state changes
+             * @param e the event to be processed
+             */
         public void actionPerformed(ActionEvent e) {
             gamePanel.setGameState("GAME");
             setVisible(false);

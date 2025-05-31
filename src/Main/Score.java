@@ -1,3 +1,5 @@
+package Main;
+
 import java.awt.*;
 
 public class Score {
@@ -22,7 +24,7 @@ public class Score {
     public void draw(Graphics2D g2, int panelWidth) {
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("Arial", Font.BOLD, 36));
-        String text = "Score: " + value;
+        String text = "Main.Score: " + value;
 
         /**
          * placing it on top middle

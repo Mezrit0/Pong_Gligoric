@@ -1,3 +1,5 @@
+package Main;
+
 import java.awt.*;
 
 public class Ball {
@@ -22,7 +24,6 @@ public class Ball {
     public void update() {
         /**
          * bounce from the top and bottom wall
-         * Source: ChatGPT
          */
         ballX += ballSpeedX;
         ballY += ballSpeedY;
@@ -40,12 +41,10 @@ public class Ball {
         /**
          * bounce from left wall
          */
-        if (ballX <= 0) {
-            ballX = 0;
-            ballSpeedX = -ballSpeedX;
-        }
-
-
+//        if (ballX <= 0) {
+//            ballX = 0;
+//            ballSpeedX = -ballSpeedX;
+//        }
 
 
     }
@@ -61,9 +60,22 @@ public class Ball {
         ballSpeedY = 4;
     }
 
+    /**
+     * increases the speed of the ball
+     */
+
     public void speedIncrease() {
-        ballSpeedY += 1;
-        ballSpeedX += 1;
+        if (ballSpeedX > 0) {
+            ballSpeedX += 1;
+        } else {
+            ballSpeedX -= 1;
+        }
+
+        if (ballSpeedY > 0) {
+            ballSpeedY += 1;
+        } else {
+            ballSpeedY -= 1;
+        }
     }
 
 
@@ -76,13 +88,17 @@ public class Ball {
     /**
      * Checks collisions with paddle
      * Source: ChatGPT
+     *
      * @param paddle
+     * @return
      */
-    public void checkCollisionWithPaddle(Rectangle paddle) {
+    public boolean checkCollisionWithPaddle(Rectangle paddle) {
         Rectangle ballRect = new Rectangle(ballX, ballY, ballSize, ballSize);
         if (ballRect.intersects(paddle)) {
             ballSpeedX = -ballSpeedX;
+            return true;
         }
+        return false;
     }
 
     public int getBallX() {

@@ -1,6 +1,7 @@
+package Main;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 public class Menu extends JPanel {
      private GamePanel gamePanel;
@@ -25,8 +26,6 @@ public class Menu extends JPanel {
 
 
         startButton.addActionListener(e -> openChooseMenu.run());
-
-
 
     }
 

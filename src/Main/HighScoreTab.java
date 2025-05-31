@@ -1,3 +1,5 @@
+package Main;
+
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -13,6 +15,10 @@ public class HighScoreTab {
         scores = new ArrayList<>();
         loadScores();
     }
+
+    /**
+     * loads the scores gained in game into the text file and then displays it into the highscore tab
+     */
 
     private void loadScores() {
         scores.clear();

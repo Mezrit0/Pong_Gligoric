@@ -1,3 +1,5 @@
+package Main;
+
 import java.awt.*;
 
 public class Player {
@@ -17,5 +19,9 @@ public class Player {
     public void draw(Graphics2D g2) {
         g2.setColor(Color.white);
         g2.fill(playerPaddle);
+    }
+
+    public Rectangle getPlayerPaddle() {
+        return playerPaddle;
     }
 }
